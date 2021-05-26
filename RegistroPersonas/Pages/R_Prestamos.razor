@@ -1,0 +1,149 @@
+﻿@page "/r_prestamos"
+
+@inject IToastService toast
+
+<EditForm Model="Prestamo" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="row d-flex justify-content-center">
+
+        <div class="col-md-6 col-sm-11 col-11">
+
+            <div class="card mt-1">
+
+                <div class="card-header">
+                    <h3>Registro de préstamos</h3>
+                </div>
+
+                <div class="card-body">
+                    <form>
+                        
+                        <div class="input-group my-2">
+                            <label class="input-group-text col-md-3 col-4">ID</label>
+                            <InputNumber class="form-control" @bind-Value="Prestamo.PrestamoId" />
+                            <button class="btn btn-warning" type="button" @onclick="Buscar">
+                                Buscar
+                            </button>
+                        </div>
+
+                        
+                        <div class="input-group my-2">
+                            <label class="input-group-text col-md-3 col-4">Fecha</label>
+                            <InputDate class="form-control" @bind-Value="Prestamo.Fecha" />
+                        </div>
+                        <ValidationMessage For="@(()=> Prestamo.Fecha)" />
+
+                        
+                        <div class="input-group my-2">
+                            <label class="input-group-text col-md-3 col-4">Persona</label>
+                            <InputSelect class="form-control" @bind-Value="Prestamo.PersonaId">
+                                @foreach (var persona in Personas)
+                                {
+                                    <option value="@persona.PersonaId"> @persona.Nombre</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <ValidationMessage For="@(()=> Prestamo.PersonaId)" />
+
+                        
+                        <div class="input-group my-2">
+                            <label class="input-group-text col-md-3 col-4">Concepto</label>
+                            <InputText class="form-control" @bind-Value="Prestamo.Concepto" />
+                        </div>
+                        <ValidationMessage For="@(()=> Prestamo.Concepto)" />
+
+                        
+                        <div class="input-group my-2">
+                            <label class="input-group-text col-md-3 col-4">Monto</label>
+                            <InputNumber class="form-control" @bind-Value="Prestamo.Monto" />
+                        </div>
+                        <ValidationMessage For="@(()=> Prestamo.Monto)" />
+
+                        
+                        <div class="input-group my-2">
+                            <label class="input-group-text col-md-3 col-4">Balance</label>
+                            <InputNumber class="form-control" @bind-Value="Prestamo.Balance" readonly />
+                        </div>
+                        <ValidationMessage For="@(()=> Prestamo.Balance)" />
+
+
+                    </form>
+                </div>
+
+                <div class="card-footer">
+
+                    
+                    <div class="container">
+
+                        <div class="row justify-content-center">
+
+                            <button class="col btn btn-primary mx-2 my-2" type="button" @onclick="Nuevo">
+                               Nuevo
+                            </button>
+
+                            <button class="col btn btn-success mx-2 my-2 " type="button" @onclick="Guardar">
+                                 Guardar
+                            </button>
+
+                            <button class="col btn btn-danger mx-2 my-2" type="button" @onclick="Eliminar">
+                               Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private Prestamo Prestamo = new Prestamo();
+    public List<Persona> Personas { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Personas = PersonaBLL.GetList(p => true);
+    }
+
+    public void Nuevo()
+    {
+        Prestamo = new Prestamo();
+    }
+
+    private void Buscar()
+    {
+        var encontrado = PrestamoBLL.Buscar(Prestamo.PrestamoId);
+
+        if (encontrado != null)
+            this.Prestamo = encontrado;
+        else
+            toast.ShowWarning("Préstamo no encontrado");
+    }
+
+    public void Guardar()
+    {
+        bool guardado = PrestamoBLL.Guardar(Prestamo);
+
+        if (guardado)
+        {
+            Nuevo();
+            toast.ShowSuccess("Prestamo guardado correctamente");
+        }
+        else
+            toast.ShowError("No se pudo guardar el Préstamo");
+    }
+
+    public void Eliminar()
+    {
+        bool eliminado = PrestamoBLL.Eliminar(Prestamo.PrestamoId);
+
+        if (eliminado)
+        {
+            Nuevo();
+            toast.ShowSuccess("Préstamo eliminado correctamente");
+        }
+        else
+            toast.ShowError("No se pudo eliminar el Préstamo");
+    }
+}
