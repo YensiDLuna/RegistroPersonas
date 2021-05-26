@@ -22,6 +22,7 @@ namespace RegistroPersonas.Models
         public string Direccion { get; set; }
         [Required(ErrorMessage = "Ingrese una fecha")]
         public DateTime Fecha { get; set; } = DateTime.Now;
+        public float Balance { get; internal set; }
     }
 
 

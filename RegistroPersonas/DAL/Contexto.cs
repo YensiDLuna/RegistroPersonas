@@ -11,7 +11,8 @@ namespace RegistroPersonas.DAL
     public class Contexto : DbContext
     {
         public DbSet<Persona> Persona { get; set; }
-        
+        public DbSet<Prestamo> Prestamo { get; set; }
+        public object Prestamos { get; internal set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

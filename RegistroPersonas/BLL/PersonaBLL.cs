@@ -70,7 +70,7 @@ namespace RegistroPersonas.BLL
 
       
         
-        private static bool Modificar(Persona persona)
+        public static bool Modificar(Persona persona)
         {
             bool paso = false;
             Contexto contexto = new Contexto();
